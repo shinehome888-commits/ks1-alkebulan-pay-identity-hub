@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>KS1 ALKEBULAN PAY – Identity Hub</title>
+  <style>
+    :root { --deep-blue: #002147; --gold: #D4AF37; }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:Segoe UI, Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: var(--deep-blue); color:white; padding:20px; min-height:100vh; display:flex; justify-content:center; align-items:center; }
+    .container { background:rgba(255,255,255,0.08); backdrop-filter:blur(10px); border-radius:16px; padding:32px; width:100%; max-width:500px; border:1px solid rgba(255,255,255,0.15); text-align:center; }
+    h1 { font-size:28px; margin-bottom:4px; }
+    .subtitle { color:#ccc; margin-bottom:24px; font-size:16px; }
+    .input-group { margin:16px 0; }
+    .radio-group { display:flex; gap:16px; margin-top:8px; justify-content:center; }
+    .radio-group label { display:flex; align-items:center; gap:6px; cursor:pointer; }
+    input, select { width:100%; padding:12px; margin:10px 0; border-radius:8px; border:1px solid #ddd; font-size:16px; }
+    .btn { background:var(--gold); color:var(--deep-blue); border:none; border-radius:8px; padding:14px; width:100%; font-weight:bold; font-size:16px; cursor:pointer; margin:16px 0; }
+    .link { color:#aaa; text-align:center; margin-top:12px; cursor:pointer; }
+    .link:hover { text-decoration:underline; }
+    .hidden { display:none; }
+    .disclaimer { margin-top:20px; padding:12px; background:rgba(0,0,0,0.2); border-radius:8px; font-size:12px; color:#ddd; }
+    footer { margin-top:30px; font-size:12px; color:#bbb; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>KS1 ALKEBULAN PAY</h1>
+    <p class="subtitle">Identity Hub • Powered By KS1EGF</p>
+
+    <div id="loginSection">
+      <input type="text" id="loginId" placeholder="Trade ID or Phone" required />
+      <input type="password" id="loginPassword" placeholder="Password" required />
+      <button class="btn gold" onclick="login()">Access Dashboard</button>
+      <p class="link" onclick="toggleForm('register')">New Registration</p>
+    </div>
+
+    <div id="registerSection" class="hidden">
+      <h2>Create Your Digital Trade Identity</h2>
+      <div class="input-group">
+        <label>Registration Method</label>
+        <div class="radio-group">
+          <label><input type="radio" name="method" value="wallet" checked /> Wallet</label>
+          <label><input type="radio" name="method" value="phone" /> Phone</label>
+        </div>
+      </div>
+      <input type="text" id="walletOrPhone" placeholder="Enter Wallet Address or Phone Number" required />
+      <input type="text" id="businessOwner" placeholder="Business Owner Full Name" required />
+      <input type="date" id="ownerBirthday" required />
+      <input type="text" id="businessName" placeholder="Business Name" required />
+      <input type="date" id="businessBirthday" required />
+      <select id="businessType" required>
+        <option value="">Select Business Type</option>
+        <option value="SME">SME</option>
+        <option value="Entrepreneur">Entrepreneur</option>
+        <option value="Trader">Trader</option>
+        <option value="Vendor">Vendor</option>
+        <option value="Enterprise">Enterprise</option>
+        <option value="Corporation">Corporation</option>
+        <option value="Startup">Startup</option>
+        <option value="Freelancer">Freelancer</option>
+        <option value="Cooperative">Cooperative</option>
+        <option value="NGO">NGO</option>
+        <option value="Individual">Individual</option>
+      </select>
+      <input type="password" id="regPassword" placeholder="Password" required />
+      <input type="password" id="confirmPassword" placeholder="Confirm Password" required />
+      <button class="btn gold" onclick="register()">Register</button>
+      <p class="link" onclick="toggleForm('login')">← Back to Login</p>
+      <div class="disclaimer">
+        <small>Your identity is managed under the nonprofit umbrella of KS1 Empire Group & Foundation (KS1EGF). No financial services are provided by KS1 ALKEBULAN PAY.</small>
+      </div>
+    </div>
+
+    <footer>
+      <p>© 2026 KS1 ALKEBULAN PAY – A Nonprofit Project By KS1 Empire Group & Foundation (KS1EGF)</p>
+    </footer>
+  </div>
+
+  <script>
+    const API_BASE = 'https://ks1-alkebulan-pay-backend.onrender.com';
+
+    function toggleForm(section) {
+      document.getElementById('loginSection').classList.toggle('hidden', section === 'register');
+      document.getElementById('registerSection').classList.toggle('hidden', section === 'login');
+    }
+
+    document.querySelectorAll('input[name="method"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        const input = document.getElementById('walletOrPhone');
+        input.placeholder = radio.value === 'wallet' ? 'Enter Wallet Address' : 'Enter Phone Number (e.g. +233555123456)';
+      });
+    });
+
+    async function register() {
+      const method = document.querySelector('input[name="method"]:checked').value;
+      const identifier = document.getElementById('walletOrPhone').value.trim();
+      const data = {
+        walletAddress: method === 'wallet' ? identifier : null,
+        phoneNumber: method === 'phone' ? identifier : null,
+        businessOwner: document.getElementById('businessOwner').value.trim(),
+        ownerBirthday: document.getElementById('ownerBirthday').value,
+        businessName: document.getElementById('businessName').value.trim(),
+        businessBirthday: document.getElementById('businessBirthday').value,
+        businessType: document.getElementById('businessType').value,
+        password: document.getElementById('regPassword').value,
+        confirmPassword: document.getElementById('confirmPassword').value
+      };
+
+      if (!data.walletAddress && !data.phoneNumber) return alert('Please enter a wallet address or phone number.');
+      if (data.password !== data.confirmPassword) return alert('Passwords do not match.');
+
+      try {
+        const res = await fetch(`${API_BASE}/auth/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        if (res.ok) {
+          alert(`Registration successful!\nYour Trade ID: ${result.tradeId}`);
+          toggleForm('login');
+        } else {
+          alert(result.message || 'Registration failed.');
+        }
+      } catch (err) {
+        alert('Network error. Please check your connection.');
+      }
+    }
+
+    async function login() {
+      const id = document.getElementById('loginId').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      try {
+        const res = await fetch(`${API_BASE}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ identifier: id, password })
+        });
+        const result = await res.json();
+        if (res.ok && result.token) {
+          localStorage.setItem('ks1_token', result.token);
+          localStorage.setItem('ks1_tradeId', result.tradeId);
+          window.location.href = 'dashboard.html';
+        } else {
+          alert(result.message || 'Login failed.');
+        }
+      } catch (err) {
+        alert('Login failed. Check your internet connection.');
+      }
+    }
+  </script>
+</body>
+</html>
