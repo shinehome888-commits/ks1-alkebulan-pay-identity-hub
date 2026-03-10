@@ -3,25 +3,31 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>KS1 ALKEBULAN PAY Dashboard</title>
+  <title>KS1 ALKEBULAN PAY – Dashboard</title>
   <style>
     :root { --deep-blue: #002147; --gold: #D4AF37; }
     * { margin:0; padding:0; box-sizing:border-box; font-family:Segoe UI, sans-serif; }
-    body { background: var(--deep-blue); color:white; padding:20px; min-height:100vh; display:flex; justify-content:center; align-items:center; }
-    .container { max-width:600px; width:100%; text-align:center; }
+    body { background: var(--deep-blue); color:white; padding:20px; min-height:100vh; }
+    .container { max-width:600px; margin:0 auto; }
     h1 { color: var(--gold); margin-bottom:20px; font-size:28px; }
     .card { background:rgba(255,255,255,0.1); padding:20px; border-radius:12px; margin:20px 0; }
+    .info-row { display:flex; justify-content:space-between; margin:10px 0; }
+    .label { color:#aaa; }
+    .value { font-weight:bold; }
     .btn { background: var(--gold); color: var(--deep-blue); border:none; padding:12px 24px; border-radius:8px; font-weight:bold; cursor:pointer; margin-top:20px; width:100%; font-size:16px; }
-    footer { margin-top:40px; font-size:12px; color:#bbb; }
+    footer { margin-top:40px; font-size:12px; color:#bbb; text-align:center; }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>KS1 ALKEBULAN PAY</h1>
     <div class="card">
-      <h2>Welcome, <span id="tradeId">—</span>!</h2>
-      <p>Your digital trade identity is active.</p>
-      <p>Use this dashboard to access escrow, funding eligibility, and transaction history.</p>
+      <div class="info-row"><span class="label">Trade ID:</span> <span class="value" id="tradeId">—</span></div>
+      <div class="info-row"><span class="label">Business Owner:</span> <span class="value" id="businessOwner">—</span></div>
+      <div class="info-row"><span class="label">Business Type:</span> <span class="value" id="businessType">—</span></div>
+      <div class="info-row"><span class="label">Contact:</span> <span class="value" id="contact">—</span></div>
+      <div class="info-row"><span class="label">Reputation Score:</span> <span class="value" id="reputation">—</span></div>
+      <div class="info-row"><span class="label">Eligibility:</span> <span class="value" id="eligibility">—</span></div>
     </div>
     <button class="btn" onclick="logout()">Logout</button>
 
@@ -31,15 +37,40 @@
   </div>
 
   <script>
-    const tradeId = localStorage.getItem('ks1_tradeId');
+    const API_BASE = 'https://ks1-alkebulan-pay-backend.onrender.com';
     const token = localStorage.getItem('ks1_token');
-    if (!token || !tradeId) window.location.href = 'index.html';
-    document.getElementById('tradeId').textContent = tradeId;
+    const tradeId = localStorage.getItem('ks1_tradeId');
+
+    if (!token || !tradeId) {
+      window.location.href = 'index.html';
+    }
+
+    async function loadProfile() {
+      try {
+        const res = await fetch(`${API_BASE}/auth/me`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error('Failed to load profile');
+        const user = await res.json();
+        document.getElementById('tradeId').textContent = user.tradeId;
+        document.getElementById('businessOwner').textContent = user.businessOwner;
+        document.getElementById('businessType').textContent = user.businessType;
+        document.getElementById('contact').textContent = user.phoneNumber || user.walletAddress || '—';
+        document.getElementById('reputation').textContent = user.reputationScore;
+        document.getElementById('eligibility').textContent = 
+          user.eligibilityStatus?.eligible ? '✅ Eligible' : '❌ Not Eligible';
+      } catch (err) {
+        alert('⚠️ ' + err.message);
+      }
+    }
+
     function logout() {
       localStorage.removeItem('ks1_token');
       localStorage.removeItem('ks1_tradeId');
       window.location.href = 'index.html';
     }
+
+    loadProfile();
   </script>
 </body>
 </html>
