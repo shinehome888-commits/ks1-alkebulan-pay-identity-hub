@@ -154,7 +154,7 @@
         </div>
         <div class="btn-row">
           <button type="button" class="btn btn-outline" onclick="prevStep(3)">← Back</button>
-          <button type="submit" class="btn" id="finalSubmit">Get My KS1 Trade ID</button>
+          <button type="button" class="btn" onclick="submitRegistration()">Get My KS1 Trade ID</button>
         </div>
       </div>
     </div>
@@ -245,20 +245,23 @@
           body: JSON.stringify({ identifier, password })
         });
         const result = await res.json();
-        if (res.ok && result.success) {
+        
+        if (res.ok && result.success && result.token) {
           localStorage.setItem('ks1_jwt_token', result.token);
           window.location.href = 'dashboard.html';
         } else {
           alert('Login failed: ' + (result.error || 'Invalid credentials'));
         }
       } catch (err) {
+        console.error('Login error:', err);
         alert('Network error. Please check your connection.');
       }
     }
 
-    // Registration final submit
-    document.getElementById('finalSubmit').addEventListener('click', async (e) => {
-      e.preventDefault();
+    // Registration
+    async function submitRegistration() {
+      if (!validateStep(3)) return;
+
       const payload = {
         full_name: document.getElementById('fullName').value.trim(),
         phone: document.getElementById('phone').value.trim(),
@@ -272,7 +275,7 @@
           body: JSON.stringify(payload)
         });
         const result = await res.json();
-        if (res.ok && result.success) {
+        if (res.ok && result.success && result.token) {
           localStorage.setItem('ks1_jwt_token', result.token);
           alert(`✅ Registration successful!\nYour KS1 Trade ID: ${result.trade_id}`);
           window.location.href = 'dashboard.html';
@@ -280,9 +283,10 @@
           alert('Registration failed: ' + (result.error || 'Unknown error'));
         }
       } catch (err) {
+        console.error('Registration error:', err);
         alert('Network error. Please check your connection.');
       }
-    });
+    }
   </script>
 </body>
 </html>
