@@ -15,6 +15,8 @@
     .tab-btn.active { background:var(--gold); color:var(--deep-blue); font-weight:bold; }
     .form-section { display:none; }
     .form-section.active { display:block; }
+    .step { display:none; }
+    .step.active { display:block; margin-top:20px; }
     .form-group { margin:16px 0; position:relative; }
     label { display:block; margin-bottom:6px; font-weight:bold; }
     input, select { width:100%; padding:12px; border-radius:8px; border:1px solid #555; background:#000; color:white; }
@@ -62,101 +64,99 @@
         <div class="step-indicator" id="step3">3</div>
       </div>
 
-      <form id="registrationForm">
-        <!-- STEP 1: PERSONAL INFO -->
-        <div class="step active" id="step-1">
-          <h2>👤 Personal Information</h2>
-          <div class="form-group">
-            <label>Full Name *</label>
-            <input type="text" id="fullName" required />
-          </div>
-          <div class="form-group">
-            <label>WhatsApp Number * (Must be active)</label>
-            <input type="tel" id="phone" placeholder="+233240000000" required />
-          </div>
-          <div class="form-group">
-            <label>Password * (min 6 characters)</label>
-            <input type="password" id="password" minlength="6" required />
-            <span class="toggle-password" onclick="togglePassword('password')">👁️</span>
-          </div>
-          <div class="form-group">
-            <label>Your Birthday *</label>
-            <input type="date" id="userBirthday" required />
-          </div>
-          <div class="btn-row">
-            <div></div>
-            <button type="button" class="btn" onclick="nextStep(1)">Next →</button>
-          </div>
+      <!-- STEP 1: PERSONAL INFO -->
+      <div class="step active" id="step-1">
+        <h2>👤 Personal Information</h2>
+        <div class="form-group">
+          <label>Full Name *</label>
+          <input type="text" id="fullName" required />
         </div>
+        <div class="form-group">
+          <label>WhatsApp Number * (Must be active)</label>
+          <input type="tel" id="phone" placeholder="+233240000000" required />
+        </div>
+        <div class="form-group">
+          <label>Password * (min 6 characters)</label>
+          <input type="password" id="password" minlength="6" required />
+          <span class="toggle-password" onclick="togglePassword('password')">👁️</span>
+        </div>
+        <div class="form-group">
+          <label>Your Birthday *</label>
+          <input type="date" id="userBirthday" required />
+        </div>
+        <div class="btn-row">
+          <div></div>
+          <button type="button" class="btn" onclick="nextStep(1)">Next →</button>
+        </div>
+      </div>
 
-        <!-- STEP 2: BUSINESS INFO -->
-        <div class="step" id="step-2">
-          <h2>🏢 Business Information</h2>
-          <div class="form-group">
-            <label>Business Name *</label>
-            <input type="text" id="businessName" required />
-          </div>
-          <div class="form-group">
-            <label>Business Birthday *</label>
-            <input type="date" id="businessBirthday" required />
-          </div>
-          <div class="form-group">
-            <label>Business Type *</label>
-            <select id="businessType" required>
-              <option value="">Select...</option>
-              <option value="Entrepreneur">Entrepreneur</option>
-              <option value="Trader">Trader</option>
-              <option value="SME">Small & Medium Enterprise (SME)</option>
-              <option value="Vendor">Vendor</option>
-              <option value="Startup">Startup</option>
-              <option value="Cooperative">Cooperative</option>
-              <option value="NGO">Non-Governmental Organization (NGO)</option>
-              <option value="Freelancer">Freelancer</option>
-              <option value="Individual">Individual Trader</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Industry *</label>
-            <input type="text" id="industry" placeholder="e.g., Agriculture, Retail, Tech" required />
-          </div>
-          <div class="form-group">
-            <label>Wallet Address (Optional)</label>
-            <input type="text" id="wallet" placeholder="e.g., 0x... or TZ..." />
-            <div class="optional">You can add this later in your dashboard.</div>
-          </div>
-          <div class="btn-row">
-            <button type="button" class="btn btn-outline" onclick="prevStep(2)">← Back</button>
-            <button type="button" class="btn" onclick="nextStep(2)">Next →</button>
-          </div>
+      <!-- STEP 2: BUSINESS INFO -->
+      <div class="step" id="step-2">
+        <h2>🏢 Business Information</h2>
+        <div class="form-group">
+          <label>Business Name *</label>
+          <input type="text" id="businessName" required />
         </div>
+        <div class="form-group">
+          <label>Business Birthday *</label>
+          <input type="date" id="businessBirthday" required />
+        </div>
+        <div class="form-group">
+          <label>Business Type *</label>
+          <select id="businessType" required>
+            <option value="">Select...</option>
+            <option value="Entrepreneur">Entrepreneur</option>
+            <option value="Trader">Trader</option>
+            <option value="SME">Small & Medium Enterprise (SME)</option>
+            <option value="Vendor">Vendor</option>
+            <option value="Startup">Startup</option>
+            <option value="Cooperative">Cooperative</option>
+            <option value="NGO">Non-Governmental Organization (NGO)</option>
+            <option value="Freelancer">Freelancer</option>
+            <option value="Individual">Individual Trader</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Industry *</label>
+          <input type="text" id="industry" placeholder="e.g., Agriculture, Retail, Tech" required />
+        </div>
+        <div class="form-group">
+          <label>Wallet Address (Optional)</label>
+          <input type="text" id="wallet" placeholder="e.g., 0x... or TZ..." />
+          <div class="optional">You can add this later in your dashboard.</div>
+        </div>
+        <div class="btn-row">
+          <button type="button" class="btn btn-outline" onclick="prevStep(2)">← Back</button>
+          <button type="button" class="btn" onclick="nextStep(2)">Next →</button>
+        </div>
+      </div>
 
-        <!-- STEP 3: LOCATION -->
-        <div class="step" id="step-3">
-          <h2>📍 Location</h2>
-          <div class="form-group">
-            <label>Country *</label>
-            <select id="country" required>
-              <option value="Ghana">Ghana</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>City / Region *</label>
-            <input type="text" id="city" placeholder="e.g., Accra, Kumasi" required />
-          </div>
-          <div class="form-group">
-            <label>Town / Area *</label>
-            <input type="text" id="town" placeholder="e.g., Osu, Adum" required />
-          </div>
-          <div class="form-group">
-            <label>Business Address *</label>
-            <input type="text" id="address" placeholder="Street, Landmark, etc." required />
-          </div>
-          <div class="btn-row">
-            <button type="button" class="btn btn-outline" onclick="prevStep(3)">← Back</button>
-            <button type="submit" class="btn">Get My KS1 Trade ID</button>
-          </div>
+      <!-- STEP 3: LOCATION -->
+      <div class="step" id="step-3">
+        <h2>📍 Location</h2>
+        <div class="form-group">
+          <label>Country *</label>
+          <select id="country" required>
+            <option value="Ghana">Ghana</option>
+          </select>
         </div>
-      </form>
+        <div class="form-group">
+          <label>City / Region *</label>
+          <input type="text" id="city" placeholder="e.g., Accra, Kumasi" required />
+        </div>
+        <div class="form-group">
+          <label>Town / Area *</label>
+          <input type="text" id="town" placeholder="e.g., Osu, Adum" required />
+        </div>
+        <div class="form-group">
+          <label>Business Address *</label>
+          <input type="text" id="address" placeholder="Street, Landmark, etc." required />
+        </div>
+        <div class="btn-row">
+          <button type="button" class="btn btn-outline" onclick="prevStep(3)">← Back</button>
+          <button type="submit" class="btn" id="finalSubmit">Get My KS1 Trade ID</button>
+        </div>
+      </div>
     </div>
 
     <footer>
@@ -165,6 +165,7 @@
   </div>
 
   <script>
+    // Tab switching
     function showTab(tab) {
       document.querySelectorAll('.form-section').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -178,11 +179,13 @@
       }
     }
 
+    // Password toggle
     function togglePassword(fieldId) {
       const field = document.getElementById(fieldId);
       field.type = field.type === 'password' ? 'text' : 'password';
     }
 
+    // Step navigation
     let currentStep = 1;
     function showStep(step) {
       document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
@@ -194,7 +197,9 @@
     }
 
     function nextStep(step) {
-      if (validateStep(step)) showStep(step + 1);
+      if (validateStep(step)) {
+        showStep(step + 1);
+      }
     }
 
     function prevStep(step) {
@@ -224,6 +229,7 @@
       return true;
     }
 
+    // Login
     async function login() {
       const identifier = document.getElementById('login-identifier').value.trim();
       const password = document.getElementById('login-password').value;
@@ -250,7 +256,8 @@
       }
     }
 
-    document.getElementById('registrationForm').addEventListener('submit', async (e) => {
+    // Registration final submit
+    document.getElementById('finalSubmit').addEventListener('click', async (e) => {
       e.preventDefault();
       const payload = {
         full_name: document.getElementById('fullName').value.trim(),
