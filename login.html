@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Login – Identity Hub</title>
+  <style>
+    body { background: #050A16; color: white; font-family: sans-serif; padding: 40px; }
+    .form { max-width: 400px; margin: 0 auto; background: rgba(255,255,255,0.05); padding: 30px; border-radius: 10px; }
+    input { width: 100%; padding: 10px; margin: 10px 0; background: #000; border: 1px solid #555; color: white; }
+    button { background: #D4AF37; color: #000; padding: 10px; width: 100%; border: none; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="form">
+    <h2>Login to Identity Hub</h2>
+    <input type="text" id="phone" placeholder="Phone (+233...)" />
+    <input type="password" id="password" placeholder="Password" />
+    <button onclick="login()">Login</button>
+    <p style="margin-top:15px;">
+      Don't have an account? <a href="https://ks1-alkebulan-pay-unified-portal.pages.dev" style="color:#D4AF37;">Register here</a>
+    </p>
+  </div>
+
+  <script>
+    async function login() {
+      const phone = document.getElementById('phone').value;
+      const password = document.getElementById('password').value;
+      const res = await fetch('https://ks1-central-auth.onrender.com/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone, password })
+      });
+      const data = await res.json();
+      if (data.success) {
+        localStorage.setItem('ks1_jwt_token', data.token);
+        window.location.href = 'dashboard.html';
+      } else {
+        alert('Login failed: ' + (data.error || 'Invalid credentials'));
+      }
+    }
+  </script>
+</body>
+</html>
