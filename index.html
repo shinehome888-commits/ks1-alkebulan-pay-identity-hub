@@ -212,7 +212,7 @@
         const result = await res.json();
         if (res.ok && result.success) {
           localStorage.setItem('ks1_jwt_token', result.token);
-          alert(`✅ Registration successful!\nYour KS1 Trade ID: ${result.user_id}`);
+          alert(`✅ Registration successful!\nYour KS1 Trade ID: ${data.trade_id}`);
           window.location.href = 'dashboard.html';
         } else {
           alert('Registration failed: ' + (result.error || 'Unknown error'));
