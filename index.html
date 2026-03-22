@@ -3,18 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>KS1 ALKEBULAN PAY – Register</title>
+  <title>KS1 ALKEBULAN PAY – Identity Hub</title>
   <style>
     :root { --deep-blue: #002147; --gold: #D4AF37; }
     * { margin:0; padding:0; box-sizing:border-box; font-family:Segoe UI, sans-serif; }
     body { background: var(--deep-blue); color:white; padding:20px; min-height:100vh; }
     .container { max-width: 600px; margin: 0 auto; }
     h1 { text-align:center; font-size:28px; margin:20px 0; color: var(--gold); }
-    .step { display:none; }
-    .step.active { display:block; }
-    .form-group { margin:16px 0; }
+    .tabs { display:flex; gap:10px; margin:20px 0; }
+    .tab-btn { flex:1; padding:12px; background:rgba(255,255,255,0.1); border:none; color:white; cursor:pointer; border-radius:8px; }
+    .tab-btn.active { background:var(--gold); color:var(--deep-blue); font-weight:bold; }
+    .form-section { display:none; }
+    .form-section.active { display:block; }
+    .form-group { margin:16px 0; position:relative; }
     label { display:block; margin-bottom:6px; font-weight:bold; }
     input, select { width:100%; padding:12px; border-radius:8px; border:1px solid #555; background:#000; color:white; }
+    .toggle-password { position:absolute; right:12px; top:38px; cursor:pointer; color:#aaa; }
     .btn-row { display:flex; gap:10px; margin:20px 0; }
     .btn { background: var(--gold); color: var(--deep-blue); border:none; border-radius:8px; padding:12px; font-weight:bold; cursor:pointer; flex:1; }
     .btn-outline { background: transparent; border:1px solid var(--gold); color: white; }
@@ -27,108 +31,133 @@
 </head>
 <body>
   <div class="container">
-    <h1>Register Your Business</h1>
+    <h1>KS1 ALKEBULAN PAY</h1>
 
-    <div class="progress">
-      <div class="step-indicator active" id="step1">1</div>
-      <div class="step-indicator" id="step2">2</div>
-      <div class="step-indicator" id="step3">3</div>
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('login')">Login</button>
+      <button class="tab-btn" onclick="showTab('register')">Register</button>
     </div>
 
-    <form id="registrationForm">
-      <!-- STEP 1: PERSONAL INFO -->
-      <div class="step active" id="step-1">
-        <h2>👤 Personal Information</h2>
-        <div class="form-group">
-          <label>Full Name *</label>
-          <input type="text" id="fullName" required />
-        </div>
-        <div class="form-group">
-          <label>WhatsApp Number * (Must be active)</label>
-          <input type="tel" id="phone" placeholder="+233240000000" required />
-        </div>
-        <div class="form-group">
-          <label>Password * (min 6 characters)</label>
-          <input type="password" id="password" minlength="6" required />
-        </div>
-        <div class="form-group">
-          <label>Your Birthday *</label>
-          <input type="date" id="userBirthday" required />
-        </div>
-        <div class="btn-row">
-          <div></div>
-          <button type="button" class="btn" onclick="nextStep(1)">Next →</button>
-        </div>
+    <!-- LOGIN FORM -->
+    <div id="login-section" class="form-section active">
+      <h2>🔐 Login to Your Account</h2>
+      <div class="form-group">
+        <label>Phone *</label>
+        <input type="text" id="login-phone" placeholder="+233240000000" required />
+      </div>
+      <div class="form-group">
+        <label>Password *</label>
+        <input type="password" id="login-password" required />
+        <span class="toggle-password" onclick="togglePassword('login-password')">👁️</span>
+      </div>
+      <button class="btn" onclick="login()">Access Dashboard</button>
+    </div>
+
+    <!-- REGISTRATION FORM -->
+    <div id="register-section" class="form-section">
+      <div class="progress">
+        <div class="step-indicator active" id="step1">1</div>
+        <div class="step-indicator" id="step2">2</div>
+        <div class="step-indicator" id="step3">3</div>
       </div>
 
-      <!-- STEP 2: BUSINESS INFO -->
-      <div class="step" id="step-2">
-        <h2>🏢 Business Information</h2>
-        <div class="form-group">
-          <label>Business Name *</label>
-          <input type="text" id="businessName" required />
+      <form id="registrationForm">
+        <!-- STEP 1: PERSONAL INFO -->
+        <div class="step active" id="step-1">
+          <h2>👤 Personal Information</h2>
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" id="fullName" required />
+          </div>
+          <div class="form-group">
+            <label>WhatsApp Number * (Must be active)</label>
+            <input type="tel" id="phone" placeholder="+233240000000" required />
+          </div>
+          <div class="form-group">
+            <label>Password * (min 6 characters)</label>
+            <input type="password" id="password" minlength="6" required />
+            <span class="toggle-password" onclick="togglePassword('password')">👁️</span>
+          </div>
+          <div class="form-group">
+            <label>Your Birthday *</label>
+            <input type="date" id="userBirthday" required />
+          </div>
+          <div class="btn-row">
+            <div></div>
+            <button type="button" class="btn" onclick="nextStep(1)">Next →</button>
+          </div>
         </div>
-        <div class="form-group">
-          <label>Business Birthday *</label>
-          <input type="date" id="businessBirthday" required />
-        </div>
-        <div class="form-group">
-          <label>Business Type *</label>
-          <select id="businessType" required>
-            <option value="">Select...</option>
-            <option value="Entrepreneur">Entrepreneur</option>
-            <option value="Trader">Trader</option>
-            <option value="SME">Small & Medium Enterprise (SME)</option>
-            <option value="Vendor">Vendor</option>
-            <option value="Startup">Startup</option>
-            <option value="Cooperative">Cooperative</option>
-            <option value="NGO">Non-Governmental Organization (NGO)</option>
-            <option value="Freelancer">Freelancer</option>
-            <option value="Individual">Individual Trader</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Industry *</label>
-          <input type="text" id="industry" placeholder="e.g., Agriculture, Retail, Tech" required />
-        </div>
-        <div class="form-group">
-          <label>Wallet Address (Optional)</label>
-          <input type="text" id="wallet" placeholder="e.g., 0x... or TZ..." />
-          <div class="optional">You can add this later in your dashboard.</div>
-        </div>
-        <div class="btn-row">
-          <button type="button" class="btn btn-outline" onclick="prevStep(2)">← Back</button>
-          <button type="button" class="btn" onclick="nextStep(2)">Next →</button>
-        </div>
-      </div>
 
-      <!-- STEP 3: LOCATION -->
-      <div class="step" id="step-3">
-        <h2>📍 Location</h2>
-        <div class="form-group">
-          <label>Country *</label>
-          <select id="country" required>
-            <option value="Ghana">Ghana</option>
-          </select>
+        <!-- STEP 2: BUSINESS INFO -->
+        <div class="step" id="step-2">
+          <h2>🏢 Business Information</h2>
+          <div class="form-group">
+            <label>Business Name *</label>
+            <input type="text" id="businessName" required />
+          </div>
+          <div class="form-group">
+            <label>Business Birthday *</label>
+            <input type="date" id="businessBirthday" required />
+          </div>
+          <div class="form-group">
+            <label>Business Type *</label>
+            <select id="businessType" required>
+              <option value="">Select...</option>
+              <option value="Entrepreneur">Entrepreneur</option>
+              <option value="Trader">Trader</option>
+              <option value="SME">Small & Medium Enterprise (SME)</option>
+              <option value="Vendor">Vendor</option>
+              <option value="Startup">Startup</option>
+              <option value="Cooperative">Cooperative</option>
+              <option value="NGO">Non-Governmental Organization (NGO)</option>
+              <option value="Freelancer">Freelancer</option>
+              <option value="Individual">Individual Trader</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Industry *</label>
+            <input type="text" id="industry" placeholder="e.g., Agriculture, Retail, Tech" required />
+          </div>
+          <div class="form-group">
+            <label>Wallet Address (Optional)</label>
+            <input type="text" id="wallet" placeholder="e.g., 0x... or TZ..." />
+            <div class="optional">You can add this later in your dashboard.</div>
+          </div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-outline" onclick="prevStep(2)">← Back</button>
+            <button type="button" class="btn" onclick="nextStep(2)">Next →</button>
+          </div>
         </div>
-        <div class="form-group">
-          <label>City / Region *</label>
-          <input type="text" id="city" placeholder="e.g., Accra, Kumasi" required />
+
+        <!-- STEP 3: LOCATION -->
+        <div class="step" id="step-3">
+          <h2>📍 Location</h2>
+          <div class="form-group">
+            <label>Country *</label>
+            <select id="country" required>
+              <option value="Ghana">Ghana</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>City / Region *</label>
+            <input type="text" id="city" placeholder="e.g., Accra, Kumasi" required />
+          </div>
+          <div class="form-group">
+            <label>Town / Area *</label>
+            <input type="text" id="town" placeholder="e.g., Osu, Adum" required />
+          </div>
+          <div class="form-group">
+            <label>Business Address *</label>
+            <input type="text" id="address" placeholder="Street, Landmark, etc." required />
+          </div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-outline" onclick="prevStep(3)">← Back</button>
+            <button type="submit" class="btn">Get My KS1 Trade ID</button>
+          </div>
         </div>
-        <div class="form-group">
-          <label>Town / Area *</label>
-          <input type="text" id="town" placeholder="e.g., Osu, Adum" required />
-        </div>
-        <div class="form-group">
-          <label>Business Address *</label>
-          <input type="text" id="address" placeholder="Street, Landmark, etc." required />
-        </div>
-        <div class="btn-row">
-          <button type="button" class="btn btn-outline" onclick="prevStep(3)">← Back</button>
-          <button type="submit" class="btn">Get My KS1 Trade ID</button>
-        </div>
-      </div>
-    </form>
+      </form>
+    </div>
 
     <footer>
       <p>© 2026 KS1 ALKEBULAN PAY – A nonprofit project by KS1 Empire Group & Foundation (KS1EGF)</p>
@@ -136,8 +165,33 @@
   </div>
 
   <script>
-    let currentStep = 1;
+    // Tab switching
+    function showTab(tab) {
+      document.querySelectorAll('.form-section').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      
+      if (tab === 'login') {
+        document.getElementById('login-section').classList.add('active');
+        document.querySelector('.tab-btn:nth-child(1)').classList.add('active');
+      } else {
+        document.getElementById('register-section').classList.add('active');
+        document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
+        showStep(1);
+      }
+    }
 
+    // Password toggle
+    function togglePassword(fieldId) {
+      const field = document.getElementById(fieldId);
+      if (field.type === 'password') {
+        field.type = 'text';
+      } else {
+        field.type = 'password';
+      }
+    }
+
+    // Registration steps
+    let currentStep = 1;
     function showStep(step) {
       document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
       document.getElementById(`step-${step}`).classList.add('active');
@@ -146,17 +200,12 @@
       });
       currentStep = step;
     }
-
     function nextStep(step) {
-      if (validateStep(step)) {
-        showStep(step + 1);
-      }
+      if (validateStep(step)) showStep(step + 1);
     }
-
     function prevStep(step) {
       showStep(step - 1);
     }
-
     function validateStep(step) {
       if (step === 1) {
         const fullName = document.getElementById('fullName').value.trim();
@@ -180,16 +229,40 @@
       return true;
     }
 
+    // Login
+    async function login() {
+      const phone = document.getElementById('login-phone').value.trim();
+      const password = document.getElementById('login-password').value;
+      if (!phone || !password) {
+        alert('Please enter phone and password.');
+        return;
+      }
+
+      try {
+        const res = await fetch('https://ks1-central-auth.onrender.com/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone, password })
+        });
+        const result = await res.json();
+        if (res.ok && result.success) {
+          localStorage.setItem('ks1_jwt_token', result.token);
+          window.location.href = 'dashboard.html';
+        } else {
+          alert('Login failed: ' + (result.error || 'Invalid credentials'));
+        }
+      } catch (err) {
+        alert('Network error. Please check your connection.');
+      }
+    }
+
+    // Registration
     document.getElementById('registrationForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-
-      // Only send fields Central Auth expects
       const payload = {
         full_name: document.getElementById('fullName').value.trim(),
         phone: document.getElementById('phone').value.trim(),
         password: document.getElementById('password').value
-        // Note: Central Auth only uses these 3 for registration
-        // Extra fields (birthday, business, etc.) are stored later in other services
       };
 
       try {
@@ -198,7 +271,6 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
-
         const result = await res.json();
         if (res.ok && result.success) {
           localStorage.setItem('ks1_jwt_token', result.token);
@@ -208,7 +280,6 @@
           alert('Registration failed: ' + (result.error || 'Unknown error'));
         }
       } catch (err) {
-        console.error('Registration error:', err);
         alert('Network error. Please check your connection.');
       }
     });
