@@ -56,7 +56,7 @@
           <input type="date" id="userBirthday" required />
         </div>
         <div class="btn-row">
-          <div></div> <!-- spacer -->
+          <div></div>
           <button type="button" class="btn" onclick="nextStep(1)">Next →</button>
         </div>
       </div>
@@ -109,7 +109,6 @@
           <label>Country *</label>
           <select id="country" required>
             <option value="Ghana">Ghana</option>
-            <!-- Add more African countries later -->
           </select>
         </div>
         <div class="form-group">
@@ -142,8 +141,6 @@
     function showStep(step) {
       document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
       document.getElementById(`step-${step}`).classList.add('active');
-      
-      // Update indicators
       document.querySelectorAll('.step-indicator').forEach((el, i) => {
         el.classList.toggle('active', i + 1 === step);
       });
@@ -186,33 +183,26 @@
     document.getElementById('registrationForm').addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const data = {
+      // Only send fields Central Auth expects
+      const payload = {
         full_name: document.getElementById('fullName').value.trim(),
         phone: document.getElementById('phone').value.trim(),
-        password: document.getElementById('password').value,
-        user_birthday: document.getElementById('userBirthday').value,
-        business_name: document.getElementById('businessName').value.trim(),
-        business_birthday: document.getElementById('businessBirthday').value,
-        business_type: document.getElementById('businessType').value,
-        industry: document.getElementById('industry').value.trim(),
-        country: document.getElementById('country').value,
-        city: document.getElementById('city').value.trim(),
-        town: document.getElementById('town').value.trim(),
-        address: document.getElementById('address').value.trim(),
-        wallet: document.getElementById('wallet').value.trim() || null
+        password: document.getElementById('password').value
+        // Note: Central Auth only uses these 3 for registration
+        // Extra fields (birthday, business, etc.) are stored later in other services
       };
 
       try {
         const res = await fetch('https://ks1-central-auth.onrender.com/auth/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
+          body: JSON.stringify(payload)
         });
 
         const result = await res.json();
         if (res.ok && result.success) {
           localStorage.setItem('ks1_jwt_token', result.token);
-          alert(`✅ Registration successful!\nYour KS1 Trade ID: ${data.trade_id}`);
+          alert(`✅ Registration successful!\nYour KS1 Trade ID: ${result.trade_id}`);
           window.location.href = 'dashboard.html';
         } else {
           alert('Registration failed: ' + (result.error || 'Unknown error'));
