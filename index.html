@@ -229,7 +229,7 @@
       return true;
     }
 
-    // Login
+    // 🔥 CORRECTED LOGIN FUNCTION — SAVES TOKEN ONLY IF VALID
     async function login() {
       const identifier = document.getElementById('login-identifier').value.trim();
       const password = document.getElementById('login-password').value;
@@ -244,16 +244,19 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ identifier, password })
         });
+
         const result = await res.json();
-        
+
+        // ✅ Only save and redirect if token exists
         if (res.ok && result.success && result.token) {
+          console.log('✅ Login successful. Token saved.');
           localStorage.setItem('ks1_jwt_token', result.token);
           window.location.href = 'dashboard.html';
         } else {
           alert('Login failed: ' + (result.error || 'Invalid credentials'));
         }
       } catch (err) {
-        console.error('Login error:', err);
+        console.error('❌ Login network error:', err);
         alert('Network error. Please check your connection.');
       }
     }
@@ -276,6 +279,7 @@
         });
         const result = await res.json();
         if (res.ok && result.success && result.token) {
+          console.log('✅ Registration successful. Token saved.');
           localStorage.setItem('ks1_jwt_token', result.token);
           alert(`✅ Registration successful!\nYour KS1 Trade ID: ${result.trade_id}`);
           window.location.href = 'dashboard.html';
@@ -283,7 +287,7 @@
           alert('Registration failed: ' + (result.error || 'Unknown error'));
         }
       } catch (err) {
-        console.error('Registration error:', err);
+        console.error('❌ Registration error:', err);
         alert('Network error. Please check your connection.');
       }
     }
